@@ -1,5 +1,6 @@
 package cn.taoguoliang.study.mybatis.binding;
 
+import cn.taoguoliang.study.mybatis.dao.ISchoolDao;
 import cn.taoguoliang.study.mybatis.dao.IUserDao;
 import cn.taoguoliang.study.mybatis.io.Resources;
 import cn.taoguoliang.study.mybatis.session.SqlSession;
@@ -29,8 +30,12 @@ class MapperProxyFactoryTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
 
         IUserDao mapper = sqlSession.getMapper(IUserDao.class);
+        ISchoolDao schoolDao = sqlSession.getMapper(ISchoolDao.class);
+
         String abc = mapper.queryUserInfoById("1");
+        String schoolName = schoolDao.querySchoolName("124");
 
         log.info("result:{}", abc);
+        log.info("result:{}", schoolName);
     }
 }

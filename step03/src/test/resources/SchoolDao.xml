@@ -1,0 +1,9 @@
+<mapper namespace="cn.taoguoliang.study.mybatis.dao.ISchoolDao">
+
+    <select id="querySchoolName">
+        SELECT name
+        FROM school
+        where id = #{id}
+    </select>
+
+</mapper>

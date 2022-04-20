@@ -2,5 +2,6 @@
 <configuration>
     <mappers>
         <mapper location="UserDao.xml" />
+        <mapper location="SchoolDao.xml" />
     </mappers>
 </configuration>
