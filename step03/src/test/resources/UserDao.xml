@@ -1,0 +1,9 @@
+<mapper namespace="cn.taoguoliang.study.mybatis.dao.IUserDao">
+
+    <select id="queryUserInfoById">
+        SELECT id, userId, userHead, createTime
+        FROM user
+        where id = #{id}
+    </select>
+
+</mapper>
