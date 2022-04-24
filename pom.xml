@@ -12,6 +12,7 @@
         <module>step01</module>
         <module>step02</module>
         <module>step03</module>
+        <module>step04</module>
     </modules>
 
     <properties>
@@ -54,6 +55,18 @@
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>2.1.3</version>
+        </dependency>
+
+        <!-- step04 连接数据库开始使用-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.22</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.27</version>
         </dependency>
     </dependencies>
 </project>
