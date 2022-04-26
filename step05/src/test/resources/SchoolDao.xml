@@ -1,0 +1,9 @@
+<mapper namespace="cn.taoguoliang.study.mybatis.dao.ISchoolDao">
+
+    <select id="querySchoolName" parameterType="java.lang.Long" resultType="cn.taoguoliang.study.mybatis.pojo.dto.Admin">
+        SELECT real_name as name
+        FROM ideamake_mc.im_admin
+        where id = #{id}
+    </select>
+
+</mapper>
