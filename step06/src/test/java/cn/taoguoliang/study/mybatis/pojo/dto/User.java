@@ -11,6 +11,9 @@ import lombok.Data;
  * @since 2022/4/20 21:29
  **/
 @Data
-public class Admin {
-    private String name;
+public class User {
+    private String id;
+    private String userId;
+    private String userName;
+    private String userHead;
 }

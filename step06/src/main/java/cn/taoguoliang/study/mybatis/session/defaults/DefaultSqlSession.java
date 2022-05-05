@@ -1,17 +1,12 @@
 package cn.taoguoliang.study.mybatis.session.defaults;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.taoguoliang.study.mybatis.mapping.BoundSql;
-import cn.taoguoliang.study.mybatis.mapping.Environment;
+import cn.taoguoliang.study.mybatis.executor.Executor;
 import cn.taoguoliang.study.mybatis.mapping.MappedStatement;
-import cn.taoguoliang.study.mybatis.reflection.ResultSetUtil;
 import cn.taoguoliang.study.mybatis.session.Configuration;
 import cn.taoguoliang.study.mybatis.session.SqlSession;
+import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -21,6 +16,7 @@ import java.util.Collection;
  * @author taogl
  * @since 2022/4/19 21:43
  **/
+@Slf4j
 public class DefaultSqlSession implements SqlSession {
 
     /**
@@ -28,31 +24,26 @@ public class DefaultSqlSession implements SqlSession {
      */
     private final Configuration configuration;
 
-    public DefaultSqlSession(Configuration configuration) {
+    private final Executor executor;
+
+    public DefaultSqlSession(Configuration configuration, Executor executor) {
         this.configuration = configuration;
+        this.executor = executor;
     }
+
 
     @Override
     public <T> T selectOne(String statement) {
-        return (T) ("你被代理了！" + "方法：" + statement);
+        MappedStatement mappedStatement = configuration.getMappedStatement(statement);
+        final List<T> list = executor.query(mappedStatement, null, null, mappedStatement.getBoundSql());
+        return list.iterator().next();
     }
 
     @Override
     public <T> T selectOne(String statement, Object args) {
         MappedStatement mappedStatement = configuration.getMappedStatement(statement);
-        Environment environment = configuration.getEnvironment();
-        try(Connection connection = environment.getDataSource().getConnection()) {
-            BoundSql boundSql = mappedStatement.getBoundSql();
-            PreparedStatement preparedStatement = connection.prepareStatement(boundSql.getSql());
-            preparedStatement.setLong(1, Long.parseLong(args.toString()));
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            Collection<T> objList = (Collection<T>) ResultSetUtil.get(resultSet, Class.forName(boundSql.getResultType()));
-            return CollectionUtil.isNotEmpty(objList) ? objList.iterator().next() : null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        final List<T> list = executor.query(mappedStatement, args, null, mappedStatement.getBoundSql());
+        return list.iterator().next();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package cn.taoguoliang.study.mybatis.binding;
 
-import cn.taoguoliang.study.mybatis.dao.ISchoolDao;
+import cn.taoguoliang.study.mybatis.dao.IUserDao;
 import cn.taoguoliang.study.mybatis.io.Resources;
-import cn.taoguoliang.study.mybatis.pojo.dto.Admin;
+import cn.taoguoliang.study.mybatis.pojo.dto.User;
 import cn.taoguoliang.study.mybatis.session.SqlSession;
 import cn.taoguoliang.study.mybatis.session.SqlSessionFactory;
 import cn.taoguoliang.study.mybatis.session.SqlSessionFactoryBuilder;
@@ -29,11 +29,11 @@ class MapperProxyFactoryTest {
 
         SqlSession sqlSession = sqlSessionFactory.openSession();
 
-        ISchoolDao schoolDao = sqlSession.getMapper(ISchoolDao.class);
+        IUserDao schoolDao = sqlSession.getMapper(IUserDao.class);
 
         for (int i = 0; i < 50; i++) {
-            Admin schoolName = schoolDao.querySchoolName("1");
-            log.info("result:{}", schoolName);
+            User user = schoolDao.queryUser("1");
+            log.info("result:{}", user);
         }
     }
 }

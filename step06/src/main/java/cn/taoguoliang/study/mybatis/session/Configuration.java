@@ -4,8 +4,16 @@ import cn.taoguoliang.study.mybatis.binding.MapperRegistry;
 import cn.taoguoliang.study.mybatis.datasource.druid.DruidDataSourceFactory;
 import cn.taoguoliang.study.mybatis.datasource.pooled.PooledDataSourceFactory;
 import cn.taoguoliang.study.mybatis.datasource.unpooled.UnPooledDataSourceFactory;
+import cn.taoguoliang.study.mybatis.executor.Executor;
+import cn.taoguoliang.study.mybatis.executor.SimpleExecutor;
+import cn.taoguoliang.study.mybatis.executor.resultset.DefaultResultSetHandler;
+import cn.taoguoliang.study.mybatis.executor.resultset.ResultSetHandler;
+import cn.taoguoliang.study.mybatis.executor.statement.PreparedStatementHandler;
+import cn.taoguoliang.study.mybatis.executor.statement.StatementHandler;
+import cn.taoguoliang.study.mybatis.mapping.BoundSql;
 import cn.taoguoliang.study.mybatis.mapping.Environment;
 import cn.taoguoliang.study.mybatis.mapping.MappedStatement;
+import cn.taoguoliang.study.mybatis.transaction.Transaction;
 import cn.taoguoliang.study.mybatis.transaction.jdbc.JdbcTransactionFactory;
 import cn.taoguoliang.study.mybatis.type.TypeAliasRegistry;
 import lombok.Getter;
@@ -71,4 +79,17 @@ public class Configuration {
     public boolean hasStatement(String statementId) {
         return mappedStatements.containsKey(statementId);
     }
+
+    public StatementHandler newStatementHandler(Executor executor, MappedStatement ms, Object parameter, ResultHandler resultHandler, BoundSql boundSql) {
+        return new PreparedStatementHandler(executor, ms, boundSql, resultHandler, parameter);
+    }
+
+    public ResultSetHandler newResultSetHandler(BoundSql boundSql) {
+        return new DefaultResultSetHandler(boundSql);
+    }
+
+    public Executor newExecutor(Transaction tx) {
+        return new SimpleExecutor(this, tx);
+    }
+
 }
