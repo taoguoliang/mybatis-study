@@ -15,6 +15,7 @@
         <module>step04</module>
         <module>step05</module>
         <module>step06</module>
+        <module>step07</module>
     </modules>
 
     <properties>

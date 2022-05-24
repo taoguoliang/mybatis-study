@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <mappers>
+        <mapper location="IUserDao.xml" />
+    </mappers>
+    <environments default="test">
+        <environment id="test">
+            <transactionManager type="Jdbc" />
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://47.108.229.73:3306/test?useOldAliasMetadataBehavior=true"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+</configuration>
