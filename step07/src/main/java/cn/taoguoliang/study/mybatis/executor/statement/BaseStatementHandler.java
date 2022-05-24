@@ -35,7 +35,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
         this.parameterObject = parameterObject;
 
         this.configuration = ms.getConfiguration();
-        this.resultSetHandler = this.configuration.newResultSetHandler(boundSql);
+        this.resultSetHandler = this.configuration.newResultSetHandler(boundSql, ms);
     }
 
     @Override

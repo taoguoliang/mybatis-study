@@ -17,26 +17,24 @@ public final class MappedStatement {
     private Configuration configuration;
     private String id;
     private SqlCommandType sqlCommandType;
-    private BoundSql boundSql;
+    private SqlSource sqlSource;
+    private Class<?> resultTypeClass;
 
     public static class Builder {
         private final MappedStatement mappedStatement = new MappedStatement();
 
-        public Builder(Configuration configuration, String id, SqlCommandType sqlCommandType) {
+        public Builder(Configuration configuration, String id, SqlCommandType sqlCommandType, SqlSource sqlSource, Class<?> resultTypeClass) {
             mappedStatement.configuration = configuration;
             mappedStatement.id = id;
             mappedStatement.sqlCommandType = sqlCommandType;
-        }
-
-        public Builder boundSql(BoundSql boundSql) {
-            mappedStatement.boundSql = boundSql;
-            return this;
+            mappedStatement.sqlSource = sqlSource;
+            mappedStatement.resultTypeClass = resultTypeClass;
         }
 
         public MappedStatement build() {
             assert mappedStatement.configuration != null;
             assert mappedStatement.id != null;
-            assert mappedStatement.boundSql != null;
+            assert mappedStatement.sqlSource != null;
             return mappedStatement;
         }
     }

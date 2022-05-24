@@ -3,6 +3,8 @@ package cn.taoguoliang.study.mybatis.reflection;
 import cn.taoguoliang.study.mybatis.reflection.factory.ObjectFactory;
 import cn.taoguoliang.study.mybatis.reflection.property.PropertyTokenizer;
 import cn.taoguoliang.study.mybatis.reflection.wrapper.BeanWrapper;
+import cn.taoguoliang.study.mybatis.reflection.wrapper.CollectionWrapper;
+import cn.taoguoliang.study.mybatis.reflection.wrapper.MapWrapper;
 import cn.taoguoliang.study.mybatis.reflection.wrapper.ObjectWrapper;
 import cn.taoguoliang.study.mybatis.reflection.wrapper.ObjectWrapperFactory;
 
@@ -37,9 +39,9 @@ public class MetaObject {
     } else if (objectWrapperFactory.hasWrapperFor(object)) {
       this.objectWrapper = objectWrapperFactory.getWrapperFor(this, object);
     } else if (object instanceof Map) {
-      this.objectWrapper = null;
+      this.objectWrapper = new MapWrapper(this, (Map<String, Object>) object);
     } else if (object instanceof Collection) {
-      this.objectWrapper = null;
+      this.objectWrapper = new CollectionWrapper(this, (Collection) object);
     } else {
       this.objectWrapper = new BeanWrapper(this, object);;
     }

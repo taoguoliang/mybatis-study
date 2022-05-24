@@ -1,13 +1,9 @@
 package cn.taoguoliang.study.mybatis.builder.xml;
 
-import cn.hutool.core.util.StrUtil;
 import cn.taoguoliang.study.mybatis.builder.BaseBuilder;
 import cn.taoguoliang.study.mybatis.datasource.DataSourceFactory;
 import cn.taoguoliang.study.mybatis.io.Resources;
-import cn.taoguoliang.study.mybatis.mapping.BoundSql;
 import cn.taoguoliang.study.mybatis.mapping.Environment;
-import cn.taoguoliang.study.mybatis.mapping.MappedStatement;
-import cn.taoguoliang.study.mybatis.mapping.SqlCommandType;
 import cn.taoguoliang.study.mybatis.session.Configuration;
 import cn.taoguoliang.study.mybatis.transaction.TransactionFactory;
 import org.dom4j.Document;
@@ -89,32 +85,10 @@ public class XMLConfigBuilder extends BaseBuilder {
 
     private void mapperElement(Element mappers) throws Exception {
         List<Element> mapperList = mappers.elements("mapper");
-        SAXReader saxReader = new SAXReader();
         for (Element e : mapperList) {
             String location = e.attributeValue("location");
-            Document document = saxReader.read(Resources.getResourceAsReader(location));
-            String namespace = document.getRootElement().attributeValue("namespace");
-            for (Element element : document.getRootElement().elements()) {
-                String id = element.attributeValue("id");
-                String type = element.getName();
-                SqlCommandType sqlCommandType = SqlCommandType.valueOfIgnoreCase(type);
-                // 解析处理，具体参照源码
-
-                // todo 暂时这样替换
-                String[] strings = StrUtil.subBetweenAll(element.getText(), "#{", "}");
-                StringBuilder sql = new StringBuilder();
-                for (String string : strings) {
-                    sql.append(StrUtil.replace(element.getText(), "#{" + string + "}", "?"));
-                }
-                MappedStatement mappedStatement = new MappedStatement
-                        .Builder(configuration, namespace + "." + id, sqlCommandType)
-                        .boundSql(new BoundSql(configuration, sql.toString(), element.attributeValue("resultType"))).build();
-                // 添加解析 SQL
-                configuration.addMappedStatement(mappedStatement);
-            }
-
-            // 注册Mapper映射器
-            configuration.addMapper(Resources.classForName(namespace));
+            XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(Resources.getResourceAsReader(location), configuration, location);
+            xmlMapperBuilder.parse();
         }
     }
 }

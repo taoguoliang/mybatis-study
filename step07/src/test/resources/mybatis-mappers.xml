@@ -9,8 +9,8 @@
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
                 <property name="url" value="jdbc:mysql://47.108.229.73:3306/test?useOldAliasMetadataBehavior=true"/>
-                <property name="username" value="root"/>
-                <property name="password" value="123456"/>
+                <property name="username" value="tgl"/>
+                <property name="password" value="Root@1234"/>
             </dataSource>
         </environment>
     </environments>

@@ -27,4 +27,17 @@ public class ParameterMapping {
   private String jdbcTypeName;
   private String expression;
 
+  public static class Builder {
+    private final ParameterMapping parameterMapping = new ParameterMapping();
+
+    public Builder(Configuration configuration, String property, Class<?> propertyType) {
+      parameterMapping.configuration = configuration;
+      parameterMapping.property = property;
+      parameterMapping.javaType = propertyType;
+    }
+
+    public ParameterMapping build() {
+      return parameterMapping;
+    }
+  }
 }

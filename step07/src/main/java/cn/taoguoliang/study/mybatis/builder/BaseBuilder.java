@@ -2,6 +2,7 @@ package cn.taoguoliang.study.mybatis.builder;
 
 import cn.taoguoliang.study.mybatis.session.Configuration;
 import cn.taoguoliang.study.mybatis.type.TypeAliasRegistry;
+import cn.taoguoliang.study.mybatis.type.TypeHandlerRegistry;
 
 /**
  * <p>
@@ -13,12 +14,20 @@ import cn.taoguoliang.study.mybatis.type.TypeAliasRegistry;
  **/
 public abstract class BaseBuilder {
 
-    protected Configuration configuration;
+    protected final Configuration configuration;
 
-    protected TypeAliasRegistry typeAliasRegistry;
+    protected final TypeAliasRegistry typeAliasRegistry;
+
+    protected final TypeHandlerRegistry typeHandlerRegistry;
 
     public BaseBuilder(Configuration configuration) {
         this.configuration = configuration;
         this.typeAliasRegistry = configuration.getTypeAliasRegistry();
+        this.typeHandlerRegistry = configuration.getTypeHandlerRegistry();
     }
+
+    protected <T> Class<? extends T> resolveAlias(String alias) {
+        return typeAliasRegistry.resolveAlias(alias);
+    }
+
 }

@@ -35,14 +35,14 @@ public class DefaultSqlSession implements SqlSession {
     @Override
     public <T> T selectOne(String statement) {
         MappedStatement mappedStatement = configuration.getMappedStatement(statement);
-        final List<T> list = executor.query(mappedStatement, null, null, mappedStatement.getBoundSql());
+        final List<T> list = executor.query(mappedStatement, null, null, mappedStatement.getSqlSource().getBoundSql(null));
         return list.iterator().next();
     }
 
     @Override
     public <T> T selectOne(String statement, Object args) {
         MappedStatement mappedStatement = configuration.getMappedStatement(statement);
-        final List<T> list = executor.query(mappedStatement, args, null, mappedStatement.getBoundSql());
+        final List<T> list = executor.query(mappedStatement, args, null, mappedStatement.getSqlSource().getBoundSql(args));
         return list.iterator().next();
     }
 
