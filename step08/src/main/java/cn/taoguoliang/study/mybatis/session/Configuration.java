@@ -6,6 +6,7 @@ import cn.taoguoliang.study.mybatis.datasource.pooled.PooledDataSourceFactory;
 import cn.taoguoliang.study.mybatis.datasource.unpooled.UnPooledDataSourceFactory;
 import cn.taoguoliang.study.mybatis.executor.Executor;
 import cn.taoguoliang.study.mybatis.executor.SimpleExecutor;
+import cn.taoguoliang.study.mybatis.executor.parameter.ParameterHandler;
 import cn.taoguoliang.study.mybatis.executor.resultset.DefaultResultSetHandler;
 import cn.taoguoliang.study.mybatis.executor.resultset.ResultSetHandler;
 import cn.taoguoliang.study.mybatis.executor.statement.PreparedStatementHandler;
@@ -21,6 +22,7 @@ import cn.taoguoliang.study.mybatis.reflection.factory.ObjectFactory;
 import cn.taoguoliang.study.mybatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import cn.taoguoliang.study.mybatis.reflection.wrapper.ObjectWrapperFactory;
 import cn.taoguoliang.study.mybatis.scripting.LanguageDriverRegistry;
+import cn.taoguoliang.study.mybatis.scripting.defaults.DefaultParameterHandler;
 import cn.taoguoliang.study.mybatis.scripting.xmltags.XMLLanguageDriver;
 import cn.taoguoliang.study.mybatis.transaction.Transaction;
 import cn.taoguoliang.study.mybatis.transaction.jdbc.JdbcTransactionFactory;
@@ -117,11 +119,18 @@ public class Configuration {
     }
 
     public StatementHandler newStatementHandler(Executor executor, MappedStatement ms, Object parameter, ResultHandler resultHandler, BoundSql boundSql) {
+        // todo
         return new PreparedStatementHandler(executor, ms, boundSql, resultHandler, parameter);
     }
 
     public ResultSetHandler newResultSetHandler(BoundSql boundSql, MappedStatement ms) {
+        // todo
         return new DefaultResultSetHandler(boundSql, ms);
+    }
+
+    public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
+        // todo
+        return new DefaultParameterHandler(mappedStatement, parameterObject, boundSql);
     }
 
     public Executor newExecutor(Transaction tx) {

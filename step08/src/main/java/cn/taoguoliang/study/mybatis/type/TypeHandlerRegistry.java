@@ -1,6 +1,5 @@
 package cn.taoguoliang.study.mybatis.type;
 
-import cn.hutool.db.meta.JdbcType;
 import cn.taoguoliang.study.mybatis.binding.MapperMethod;
 
 import java.lang.reflect.Constructor;
@@ -25,10 +24,21 @@ public class TypeHandlerRegistry {
 
     private final Map<Type, Map<JdbcType, TypeHandler<?>>> typeHandlerMap = new ConcurrentHashMap<>();
 
+    private final Map<Class<?>, TypeHandler<?>> allTypeHandlersMap = new HashMap<>();
+
     private static final Map<JdbcType, TypeHandler<?>> NULL_TYPE_HANDLER_MAP = Collections.emptyMap();
 
     // todo
     private Class<? extends TypeHandler> defaultEnumTypeHandler = null;
+
+    public TypeHandlerRegistry() {
+        register(Long.class, new LongTypeHandler());
+        register(long.class, new LongTypeHandler());
+
+        register(String.class, new StringTypeHandler());
+        register(String.class, JdbcType.CHAR, new StringTypeHandler());
+        register(String.class, JdbcType.VARCHAR, new StringTypeHandler());
+    }
 
     public boolean hasTypeHandler(Class<?> javaType) {
         return hasTypeHandler(javaType, null);
@@ -36,6 +46,10 @@ public class TypeHandlerRegistry {
 
     public boolean hasTypeHandler(Class<?> javaType, JdbcType jdbcType) {
         return javaType != null && getTypeHandler((Type) javaType, jdbcType) != null;
+    }
+
+    public <T> TypeHandler<T> getTypeHandler(Class<T> type, JdbcType jdbcType) {
+        return getTypeHandler((Type) type, jdbcType);
     }
 
     private <T> TypeHandler<T> getTypeHandler(Type type, JdbcType jdbcType) {
@@ -125,6 +139,22 @@ public class TypeHandlerRegistry {
         return soleHandler;
     }
 
+    public <T> void register(Class<T> type, JdbcType jdbcType, TypeHandler<? extends T> handler) {
+        register((Type) type, jdbcType, handler);
+    }
+
+    private void register(Type javaType, JdbcType jdbcType, TypeHandler<?> handler) {
+        if (javaType != null) {
+            Map<JdbcType, TypeHandler<?>> map = typeHandlerMap.get(javaType);
+            if (map == null || map == NULL_TYPE_HANDLER_MAP) {
+                map = new HashMap<>();
+                typeHandlerMap.put(javaType, map);
+            }
+            map.put(jdbcType, handler);
+        }
+        allTypeHandlersMap.put(handler.getClass(), handler);
+    }
+
     public <T> void register(Class<T> javaType, TypeHandler<? extends T> typeHandler) {
         register((Type) javaType, typeHandler);
     }
@@ -142,6 +172,7 @@ public class TypeHandlerRegistry {
 //        } else {
 //            register(javaType, null, typeHandler);
 //        }
+        register(javaType, null, typeHandler);
     }
 
     public void register(JdbcType jdbcType, TypeHandler<?> handler) {
@@ -165,6 +196,10 @@ public class TypeHandlerRegistry {
         } catch (Exception e) {
             throw new RuntimeException("Unable to find a usable constructor for " + typeHandlerClass, e);
         }
+    }
+
+    public TypeHandler<?> getMappingTypeHandler(Class<? extends TypeHandler<?>> handlerType) {
+        return allTypeHandlersMap.get(handlerType);
     }
 
 }

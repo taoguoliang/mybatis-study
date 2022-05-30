@@ -1,6 +1,7 @@
 package cn.taoguoliang.study.mybatis.executor.statement;
 
 import cn.taoguoliang.study.mybatis.executor.Executor;
+import cn.taoguoliang.study.mybatis.executor.parameter.ParameterHandler;
 import cn.taoguoliang.study.mybatis.executor.resultset.ResultSetHandler;
 import cn.taoguoliang.study.mybatis.mapping.BoundSql;
 import cn.taoguoliang.study.mybatis.mapping.MappedStatement;
@@ -21,6 +22,8 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
     protected final Configuration configuration;
     protected final Executor executor;
+    protected final ParameterHandler parameterHandler;
+
 
     protected final MappedStatement mappedStatement;
     protected final BoundSql boundSql;
@@ -36,6 +39,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
         this.configuration = ms.getConfiguration();
         this.resultSetHandler = this.configuration.newResultSetHandler(boundSql, ms);
+        this.parameterHandler = this.configuration.newParameterHandler(mappedStatement, parameterObject, boundSql);
     }
 
     @Override

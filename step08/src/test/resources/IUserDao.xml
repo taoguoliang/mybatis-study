@@ -6,4 +6,9 @@
         where id = #{id}
     </select>
 
+    <select id="queryUserInfo" parameterType="cn.taoguoliang.study.mybatis.pojo.dto.User" resultType="cn.taoguoliang.study.mybatis.pojo.dto.User">
+        SELECT id, userId, userName, userHead
+        FROM USER
+        where id = #{id} and userId = #{userId}
+    </select>
 </mapper>

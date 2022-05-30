@@ -4,7 +4,8 @@ import cn.taoguoliang.study.mybatis.pojo.dto.User;
 
 public interface IUserDao {
 
-    User queryUser(String uId);
+    User queryUser(Long uId);
 
+    User queryUserInfo(User user);
 }
 

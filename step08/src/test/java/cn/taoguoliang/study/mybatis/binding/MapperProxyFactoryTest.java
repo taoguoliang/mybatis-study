@@ -7,6 +7,7 @@ import cn.taoguoliang.study.mybatis.session.SqlSession;
 import cn.taoguoliang.study.mybatis.session.SqlSessionFactory;
 import cn.taoguoliang.study.mybatis.session.SqlSessionFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
@@ -22,18 +23,28 @@ import java.io.Reader;
 @Slf4j
 class MapperProxyFactoryTest {
 
-    @Test
-    public void test() {
+    private IUserDao userDao;
+
+    @BeforeEach
+    public void before() {
         Reader reader = Resources.getResourceAsReader("mybatis-mappers.xml");
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-
         SqlSession sqlSession = sqlSessionFactory.openSession();
+        userDao = sqlSession.getMapper(IUserDao.class);
+    }
 
-        IUserDao schoolDao = sqlSession.getMapper(IUserDao.class);
+    @Test
+    void test() {
+        User user = userDao.queryUser(1L);
+        log.info("result:{}", user);
+    }
 
-        for (int i = 0; i < 50; i++) {
-            User user = schoolDao.queryUser("1");
-            log.info("result:{}", user);
-        }
+    @Test
+    void test1() {
+        User userParam = new User();
+        userParam.setId("1");
+        userParam.setUserId("10001");
+        User user = userDao.queryUserInfo(userParam);
+        log.info("result2:{}", user);
     }
 }

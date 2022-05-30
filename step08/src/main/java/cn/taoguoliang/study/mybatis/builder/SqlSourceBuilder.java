@@ -1,6 +1,5 @@
 package cn.taoguoliang.study.mybatis.builder;
 
-import cn.hutool.db.meta.JdbcType;
 import cn.taoguoliang.study.mybatis.mapping.ParameterMapping;
 import cn.taoguoliang.study.mybatis.mapping.SqlSource;
 import cn.taoguoliang.study.mybatis.parsing.GenericTokenParser;
@@ -8,6 +7,7 @@ import cn.taoguoliang.study.mybatis.parsing.TokenHandler;
 import cn.taoguoliang.study.mybatis.reflection.MetaClass;
 import cn.taoguoliang.study.mybatis.reflection.MetaObject;
 import cn.taoguoliang.study.mybatis.session.Configuration;
+import cn.taoguoliang.study.mybatis.type.JdbcType;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.Map;
  **/
 public class SqlSourceBuilder extends BaseBuilder {
 
-    private static final String parameterProperties = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
+    private static final String PARAMETER_PROPERTIES = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
 
     public SqlSourceBuilder(Configuration configuration) {
         super(configuration);
@@ -80,6 +80,38 @@ public class SqlSourceBuilder extends BaseBuilder {
                 }
             }
             ParameterMapping.Builder builder = new ParameterMapping.Builder(configuration, property, propertyType);
+            Class<?> javaType = propertyType;
+            String typeHandlerAlias = null;
+            for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
+                String name = entry.getKey();
+                String value = entry.getValue();
+                if ("javaType".equals(name)) {
+                    javaType = resolveClass(value);
+                    builder.javaType(javaType);
+                } else if ("jdbcType".equals(name)) {
+                    builder.jdbcType(resolveJdbcType(value));
+                } else if ("mode".equals(name)) {
+                    // todo
+//                    builder.mode(resolveParameterMode(value));
+                } else if ("numericScale".equals(name)) {
+//                    builder.numericScale(Integer.valueOf(value));
+                } else if ("resultMap".equals(name)) {
+//                    builder.resultMapId(value);
+                } else if ("typeHandler".equals(name)) {
+                    typeHandlerAlias = value;
+                } else if ("jdbcTypeName".equals(name)) {
+//                    builder.jdbcTypeName(value);
+                } else if ("property".equals(name)) {
+                    // Do Nothing
+                } else if ("expression".equals(name)) {
+                    throw new BuilderException("Expression based parameters are not supported yet");
+                } else {
+                    throw new BuilderException("An invalid property '" + name + "' was found in mapping #{" + content + "}.  Valid properties are " + PARAMETER_PROPERTIES);
+                }
+            }
+            if (typeHandlerAlias != null) {
+                builder.typeHandler(resolveTypeHandler(javaType, typeHandlerAlias));
+            }
             return builder.build();
         }
 

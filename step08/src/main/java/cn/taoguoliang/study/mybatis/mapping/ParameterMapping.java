@@ -1,7 +1,9 @@
 package cn.taoguoliang.study.mybatis.mapping;
 
-import cn.hutool.db.meta.JdbcType;
 import cn.taoguoliang.study.mybatis.session.Configuration;
+import cn.taoguoliang.study.mybatis.type.JdbcType;
+import cn.taoguoliang.study.mybatis.type.TypeHandler;
+import cn.taoguoliang.study.mybatis.type.TypeHandlerRegistry;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +20,8 @@ import lombok.Setter;
 public class ParameterMapping {
 
   private Configuration configuration;
+
+  private TypeHandler<?> typeHandler;
 
   private String property;
   private Class<?> javaType = Object.class;
@@ -36,8 +40,32 @@ public class ParameterMapping {
       parameterMapping.javaType = propertyType;
     }
 
+    public Builder javaType(Class<?> javaType) {
+      parameterMapping.javaType = javaType;
+      return this;
+    }
+
+    public Builder jdbcType(JdbcType jdbcType) {
+      parameterMapping.jdbcType = jdbcType;
+      return this;
+    }
+
+    public Builder typeHandler(TypeHandler<?> typeHandler) {
+      parameterMapping.typeHandler = typeHandler;
+      return this;
+    }
+
     public ParameterMapping build() {
+      resolveTypeHandler();
       return parameterMapping;
+    }
+
+    private void resolveTypeHandler() {
+      if (parameterMapping.typeHandler == null && parameterMapping.javaType != null) {
+        Configuration configuration = parameterMapping.configuration;
+        TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+        parameterMapping.typeHandler = typeHandlerRegistry.getTypeHandler(parameterMapping.javaType, parameterMapping.jdbcType);
+      }
     }
   }
 }
