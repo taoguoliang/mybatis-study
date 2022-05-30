@@ -1,0 +1,9 @@
+<mapper namespace="cn.taoguoliang.study.mybatis.dao.IUserDao">
+
+    <select id="queryUser" parameterType="java.lang.Long" resultType="cn.taoguoliang.study.mybatis.pojo.dto.User">
+        SELECT id, userId, userName, userHead
+        FROM USER
+        where id = #{id}
+    </select>
+
+</mapper>
